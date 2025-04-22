@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "hack-disabler",
+  "version": "${version}",
+  "name": "Hack Disabler",
+  "description": "An Addon to that disables all hacks when the module is enabled",
+  "authors": [
+    "nnpg"
+  ],
+  "contact": {
+    "repo": "https://github.com/realnnpg/realnnpg.github.io"
+  },
+  "icon": "assets/template/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": [
+      "com.nnpg.hackdisabler.HackDisablerAddon"
+    ]
+  },
+
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
+  "depends": {
+    "java": ">=21",
+    "minecraft": ["${mc_version}"],
+    "meteor-client": "*"
+  }
+}
