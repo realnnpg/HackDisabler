@@ -1,16 +1,23 @@
 package com.nnpg.hackdisabler;
 
-import com.nnpg.hackdisabler.modules.HackDisabler;
-import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
+import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 
 import java.io.File;
 
 public class HackDisablerAddon extends MeteorAddon {
+
+    private static final String CONFIG_DIR = "hack-disabler";
+    private File folder;
+
     @Override
     public void onInitialize() {
-        Modules.get().add(new HackDisabler());
+        folder = new File(MeteorClient.FOLDER, CONFIG_DIR);
+        if (!folder.exists() && !folder.mkdirs()) {
+            warning("Failed to create configuration directory: " + folder.getAbsolutePath());
+        }
+        Modules.get().add(new HackDisabler(folder));
     }
 
     @Override
@@ -18,8 +25,13 @@ public class HackDisablerAddon extends MeteorAddon {
         return "com.nnpg.hackdisabler";
     }
 
-    //@Override
+    @Override
     public File getFolder() {
-        return new File(MeteorClient.FOLDER, "hack-disabler");
+        return folder;
+    }
+
+    @Override
+    public void onShutdown() {
+        MeteorClient.EVENT_BUS.unsubscribe(this);
     }
 }
