@@ -1,5 +1,6 @@
 package com.nnpg.hackdisabler.modules;
 
+import meteordevelopment.meteorclient.events.game.GameJoinedEvent;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.settings.ModuleListSetting;
@@ -52,36 +53,34 @@ public class HackDisabler extends Module {
         MeteorClient.EVENT_BUS.subscribe(this);
     }
 
+
+    @EventHandler
+    private void onGameJoined(GameJoinedEvent event) {
+        for (Module module : disabledModulesOnDisconnect) {
+            if (module != this) {
+                trackedModules.add(module);
+                disabledModules.add(module);
+            }
+        }
+        disabledModulesOnDisconnect.clear();
+    }
+
     @Override
     public void onActivate() {
-        if (!disabledModulesOnDisconnect.isEmpty()) {
-            List<Module> ignoredModules = ignoredModulesSetting.get();
-            for (Module module : disabledModulesOnDisconnect) {
-                if (module != this) {
-                    trackedModules.add(module);
-                    if (!ignoredModules.contains(module)) {
-                        disabledModules.add(module);
-                    }
+        disabledModules.clear();
+        queuedModules.clear();
+        trackedModules.clear();
+        List<Module> ignoredModules = ignoredModulesSetting.get();
+        for (Module module : Modules.get().getAll()) {
+            if (module != this) {
+                trackedModules.add(module);
+                if (module.isActive() && !ignoredModules.contains(module)) {
+                    module.toggle();
+                    disabledModules.add(module);
                 }
             }
-            disabledModulesOnDisconnect.clear();
-        } else {
-
-            disabledModules.clear();
-            queuedModules.clear();
-            trackedModules.clear();
-            List<Module> ignoredModules = ignoredModulesSetting.get();
-            for (Module module : Modules.get().getAll()) {
-                if (module != this) {
-                    trackedModules.add(module);
-                    if (module.isActive() && !ignoredModules.contains(module)) {
-                        module.toggle();
-                        disabledModules.add(module);
-                    }
-                }
-            }
-            info("Disabled " + disabledModules.size() + " modules.");
         }
+        info("Disabled " + disabledModules.size() + " modules.");
     }
 
 
@@ -93,7 +92,6 @@ public class HackDisabler extends Module {
             }
         }
         info("Re-enabled " + disabledModules.size() + " modules.");
-        //disabledModules.clear();
         for (Module module : queuedModules) {
             if (!module.isActive()) {
                 module.toggle();
