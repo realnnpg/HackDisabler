@@ -1,7 +1,7 @@
 # 🛡️ HackDisabler Addon for Meteor Client
 <img src="https://nnpg.dev/hackdisablericon.png" width="300"/><br>
 <sub> *v1.0 for Minecraft 1.21.4 | Fabric + Meteor Required*</sub><br>
-
+[![Github All Releases](https://img.shields.io/github/downloads/realnnpg/HackDisabler/total.svg)]()
 
 ## ✨Features:
 ✔️ One-click toggle - Disables ALL active hacks (except ignored ones)<br>
